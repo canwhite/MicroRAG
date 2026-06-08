@@ -345,7 +345,7 @@ gpt_m = [0.0] * len(gpt_params)
 gpt_v = [0.0] * len(gpt_params)
 gpt_lr = 0.05
 
-for step in range(2000):
+for step in range(300):
     # 随机选一个 QA 对
     gt_idx = random.randint(0, len(knowledge_base) - 1)
     gt_q, gt_a = knowledge_base[gt_idx]
@@ -374,7 +374,7 @@ for step in range(2000):
 
     loss.backward()
 
-    lr_t = gpt_lr * (1 - step / 2000)
+    lr_t = gpt_lr * (1 - step / 300)
     for i, p in enumerate(gpt_params):
         gpt_m[i] = beta1 * gpt_m[i] + (1 - beta1) * p.grad
         gpt_v[i] = beta2 * gpt_v[i] + (1 - beta2) * p.grad ** 2
