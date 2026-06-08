@@ -99,15 +99,24 @@ class Value:
         return other * self ** -1
 
     def backward(self):
+        # 迭代拓扑排序，避免递归深度超限
         topo: list[Value] = []
         visited: set[Value] = set()
-        def build_topo(v: Value) -> None:
-            if v not in visited:
+        stack: list[tuple[Value, bool]] = [(self, False)]
+
+        while stack:
+            v, processed = stack.pop()
+            if v in visited:
+                continue
+            if processed:
                 visited.add(v)
-                for child in v._children:
-                    build_topo(child)
                 topo.append(v)
-        build_topo(self)
+            else:
+                stack.append((v, True))
+                for child in v._children:
+                    if child not in visited:
+                        stack.append((child, False))
+
         self.grad = 1
         for v in reversed(topo):
             for child, lg in zip(v._children, v._local_grads):
@@ -374,7 +383,7 @@ for step in range(2000):
         p.data -= lr_t * mh / (vh ** 0.5 + eps)
         p.grad = 0
 
-    if step % 500 == 0:
+    if step % 100 == 0:
         print(f"gpt step {step:4d} | loss {loss.data:.4f}")
 
 # ============================================================
