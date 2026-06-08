@@ -5,7 +5,7 @@ Retriever + Generator，完整的两步流程
 
 import math
 import random
-from typing import cast, Sequence
+from typing import Sequence
 
 random.seed(42)
 
@@ -37,7 +37,6 @@ EMBED_DIM = 32
 BLOCK_SIZE = 64
 
 # 特殊 token
-Q_TOKEN = VOCAB_SIZE       # 问题标记
 SEP = VOCAB_SIZE + 1      # 分隔符
 PAD = VOCAB_SIZE + 2      # padding
 TOTAL_VOCAB = VOCAB_SIZE + 3
@@ -390,9 +389,8 @@ def rag_answer(question: str) -> str:
     _, best_idx = retrieve(q_f, top_k=1)[0]
     retrieved_a = knowledge_base[best_idx][1]
 
-    # 2. 拼接输入: question + SEP + retrieved_answer
-    input_text = question + chr(0) + retrieved_a + " "
-    input_ids = encode(input_text)
+    # 2. 拼接输入: question + SEP + retrieved_answer（格式与训练一致）
+    input_ids = encode(question) + [SEP] + encode(retrieved_a + " ")
 
     # 3. 生成
     output_ids = generate(input_ids, max_new_tokens=60, temperature=0.8)
