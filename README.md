@@ -6,19 +6,6 @@ A minimal Retrieval-Augmented Generation (RAG) system implemented from scratch i
 
 ---
 
-## 项目结构 / Project Structure
-
-```
-MicroRAG/
-├── main.py          # 全部代码（模型、训练、推理）
-├── docs/
-│   ├── micro_rag_dimensions.md          # 维度变化详解 / Dimension flow guide
-│   └── attention_mask_vs_truncation.md # 注意力概念区分 / Attention concepts
-└── README.md
-```
-
----
-
 ## 核心特性 / Core Features
 
 | 特性 / Feature | 说明 / Description |
@@ -55,7 +42,7 @@ Query      retrieve        concat context   generate           answer
 ## 运行 / Run
 
 ```bash
-python main.py
+uv run main.py
 ```
 
 输出示例：
