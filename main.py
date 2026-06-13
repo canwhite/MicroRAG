@@ -188,6 +188,7 @@ def generate(input_ids: list[int], max_new_tokens: int = 50, temperature: float 
     ids = input_ids.copy()
     for _ in range(max_new_tokens):
         logits_all = gpt_forward(ids)
+        #生成的时候用最后一层，作为LM_Head，因为最后一层跟所有前置的都勾兑过
         logits = logits_all[-1]
         if temperature == 0:
             next_id = max(range(len(logits)), key=lambda i: logits[i].data)
@@ -357,6 +358,7 @@ for step in range(300):
 
     # 取所有位置的 logits
     logits_all: list[list[Value]] = gpt_forward(seq[:-1])
+
     # 交叉熵 loss
     loss: Value = Value(0)
     for i, tid in enumerate(seq[1:]):
@@ -387,7 +389,7 @@ for step in range(300):
         print(f"gpt step {step:4d} | loss {loss.data:.4f}")
 
 # ============================================================
-# 8. RAG 完整流程测试
+# 8. RAG 完整流程测试，从这里开始看
 # ============================================================
 def rag_answer(question: str) -> str:
     """完整 RAG: 检索 -> 拼上下文 -> 生成答案"""
